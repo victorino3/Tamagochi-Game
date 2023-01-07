@@ -169,7 +169,7 @@ function createAction(){
   feed.position(mymidle, canvDim - canvDim*0.08);
   verifyHygieneToExplorar() 
   fight.position(mylastmydle, canvDim - canvDim*0.08);
-  //feed.mousePressed(feedMyTamagochi)
+  feed.mousePressed(feedAndGrow)
   
 }
 
@@ -201,6 +201,10 @@ function reduceFeed() {
   console.log(feedScore);
 }
 
+function feedAndGrow(){
+  console.log("Eating")
+
+}
 
 
 function verifyLifeToDown(){
