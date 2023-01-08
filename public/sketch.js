@@ -29,12 +29,23 @@ let myArray = [
   'terrariumclear.png',
   'wolfie3.png'
 ]
+//Generating food
+let myArrayFood = [
+  'ant1clear.png',      
+  'beetle2.png',       
+  'blackwidow.png',    
+]
+
+let imageFood = Math.floor(Math.random() * myArrayFood.length);
+let imagemAlternativeFood =  myArrayFood[imageFood]
+
 //image
 let imagedb = Math.floor(Math.random() * myArray.length);
 let imagemAlternative =  myArray[imagedb]
 
 let dbImage;
 let imagem;
+let imageFoodUpload;
 let img;
 let bg;
 
@@ -54,8 +65,8 @@ function setup() {
 
   //Initialize point if are null
   //my Scores by default
-  feedScore = feedStart == 0 ||  feedStart ==  null || feedStart ==  undefined ?  60: feedStart 
-  showerScore =  showerStart == 0 ||  showerStart ==  null || showerStart ==  undefined ? 60 : showerStart 
+  feedScore = feedStart == 0 ||  feedStart ==  null || feedStart ==  undefined ?  20: feedStart 
+  showerScore =  showerStart == 0 ||  showerStart ==  null || showerStart ==  undefined ? 0 : showerStart 
   lifeScore =  lifeStart == 0 ||  lifeStart ==  null || lifeStart ==  undefined ? 80 : lifeStart 
   checkButtonFeed()
   //Data of previous session
@@ -80,7 +91,9 @@ function setup() {
 function preload(dbImage) {
   let finalImage = dbImage ? dbImage : imagemAlternative
   console.log(dbImage)
-  imagem = 'image/'+finalImage 
+  imagem = 'image/'+finalImage
+  let food = 'image/'+imagemAlternativeFood
+  imageFoodUpload = loadImage(`${food}`);
   img = loadImage(`${imagem}`);
   gameOverImg = loadImage('image/GAMEOVER3.png');
 }
@@ -171,6 +184,7 @@ function createAction(){
   fight.position(mylastmydle, canvDim - canvDim*0.08);
   feed.mousePressed(feedAndGrow)
   
+  
 }
 
 function verifyHygieneToExplorar(){
@@ -202,9 +216,13 @@ function reduceFeed() {
 }
 
 function feedAndGrow(){
-  console.log("Eating")
-
+  
+  image(imageFoodUpload, (width-500)/2, (height-400)/2, 500, 400);
+   
+ // imagemAlternativeFood
+   
 }
+
 
 
 function verifyLifeToDown(){
@@ -216,6 +234,10 @@ function verifyLifeToDown(){
     verifyLifeToEnd()
     
   } 
+
+
+
+
 
 function verifyLifeToUp(){ 
     if(lifeScore < 100){
@@ -233,6 +255,11 @@ function verifyLifeToEnd(){
     noLoop()
   }
 }
+
+
+
+
+
 function increaseShower(){
   if(showerScore < 100){
     showerScore = 100
