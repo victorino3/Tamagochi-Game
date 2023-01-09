@@ -30,14 +30,13 @@ let myArray = [
   'wolfie3.png'
 ]
 //Generating food
+let value
 let myArrayFood = [
-  'ant1clear.png',      
-  'beetle2.png',       
-  'blackwidow.png',    
+  'Mosca',      
+  'Lagarto',       
+  'Ups !!Sem comida disponível',    
 ]
 
-let imageFood = Math.floor(Math.random() * myArrayFood.length);
-let imagemAlternativeFood =  myArrayFood[imageFood]
 
 //image
 let imagedb = Math.floor(Math.random() * myArray.length);
@@ -53,9 +52,14 @@ let bg;
 let feedStart=0
 let showerStart=0
 let lifeStart=0
+let reduceLife=0
 let bothScoreFeed=0
 let bothScoreShower=0
 let bothScoreLife=0
+let imageWidthToIncrease=0
+let imageHeightToIncrease=0
+let showText = false;
+let currentValue;
 //////////////////////////// game over
 let gameOverImg;
 let objScore = {}
@@ -66,12 +70,9 @@ function setup() {
   //Initialize point if are null
   //my Scores by default
   feedScore = feedStart == 0 ||  feedStart ==  null || feedStart ==  undefined ?  20: feedStart 
-  showerScore =  showerStart == 0 ||  showerStart ==  null || showerStart ==  undefined ? 0 : showerStart 
-  lifeScore =  lifeStart == 0 ||  lifeStart ==  null || lifeStart ==  undefined ? 80 : lifeStart 
+  showerScore =  showerStart == 0 ||  showerStart ==  null || showerStart ==  undefined ? 10 : showerStart 
+  lifeScore =  lifeStart == 0 ||  lifeStart ==  null || lifeStart ==  undefined ? 10 : lifeStart 
   checkButtonFeed()
-  //Food generator
-  let food = 'image/'+imagemAlternativeFood
-  imageFoodUpload = loadImage(`${food}`);
   //input username
   inputun = createInput('victorino');
   inputun.position(canvDim * 1/2 - inputun.width / 2, canvDim * 1/4 - inputun.height / 2);
@@ -87,6 +88,7 @@ function setup() {
   RegisterButton.position(canvDim * 1/2 + RegisterButton.width / 4, canvDim * 3/4 - RegisterButton.height / 2);
   loginButton.mousePressed(login);
   RegisterButton.mousePressed(Register);
+ 
   
 }
 
@@ -111,8 +113,8 @@ function draw() {
   if(creatorLogin == true) {
     text('Welcome back, Maddie!', canvDim / 2, canvDim / 2);
     
-   let imgWidth = (img.width / 8) + bothScoreFeed -3; 
-   let imgHeigth= (img.height / 8) + bothScoreShower -3;
+   let imgWidth = (img.width / 8) + imageWidthToIncrease -3; 
+   let imgHeigth= (img.height / 8) + imageHeightToIncrease -3;
    image(img, 0, height / 2,imgWidth ,imgHeigth);
   
    createAction()
@@ -183,6 +185,7 @@ function createAction(){
   verifyHygieneToExplorar() 
   fight.position(mylastmydle, canvDim - canvDim*0.08);
   feed.mousePressed(toggleText)
+  feedAndGrow()
   
   
 }
@@ -191,6 +194,7 @@ function verifyHygieneToExplorar(){
   if (bothScoreShower == 100) {
     explore = createButton("Explorar")
     explore.position(myothermydle, canvDim - canvDim*0.08);
+    console.log("Cliquei em explorar")
   } else {
 
     shower = createButton('Hygiene');
@@ -216,31 +220,45 @@ function reduceFeed() {
 }
 
 
+
 function feedAndGrow() {
-  /*fill(0);
-  textSize(32);
-  textFont("Georgia");
-  text("comendo mosca", 50, 50);
-  for (let i = 0; i < 200; i++) {
-    stroke(random(255), random(255), random(255));
-    line(random(width), random(height), random(width), random(height));
-  }*/
   push()
   if (showText) {
-    textSize(48);
-    fill(255, 0, 0);
-    textStyle(BOLD);
-    text("Comendo", width/2, height/2);
+    fill(0);
+    textSize(32);
+    textFont("Georgia");
+    textAlign(CENTER, CENTER);
+    
+      text("Comendo..."+currentValue, width/2, height/2);
+      for (let i = 0; i < 200; i++) {
+        stroke(random(255), random(255), random(255));
+        line(random(width), random(height), random(width), random(height));
+  }
+
+  console.log("Sorted "+currentValue)
+
   }
   pop()
 }
 
 function toggleText() {
   showText = !showText;
+  if(bothScoreLife < 100 && currentValue == "Mosca"  ){
+    lifeScore += 30
+  }
+  if(imageHeightToIncrease < 150 && imageWidthToIncrease < 150 &&  currentValue == "Lagarto"){
+    imageHeightToIncrease += 50
+    imageWidthToIncrease += 50
+    //console.log("image and height "+ imageHeightToIncrease, imageWidthToIncrease)
+  }
+  if (bothScoreLife > 0 && currentValue === "Ups !!Sem comida disponível") {
+    lifeScore -= 10;
+  }
   if (showText) {
+    currentValue = random(myArrayFood);
     setTimeout(function() {
       showText = false;
-    }, 10000);
+    }, 100);
   }
 }
 
