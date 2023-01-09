@@ -1,5 +1,5 @@
 //canvas dimensions
-const canvDim = 750;
+const canvDim = 500;
 
 //input boxes
 var inputun, inputpass;
@@ -69,7 +69,9 @@ function setup() {
   showerScore =  showerStart == 0 ||  showerStart ==  null || showerStart ==  undefined ? 0 : showerStart 
   lifeScore =  lifeStart == 0 ||  lifeStart ==  null || lifeStart ==  undefined ? 80 : lifeStart 
   checkButtonFeed()
-  //Data of previous session
+  //Food generator
+  let food = 'image/'+imagemAlternativeFood
+  imageFoodUpload = loadImage(`${food}`);
   //input username
   inputun = createInput('victorino');
   inputun.position(canvDim * 1/2 - inputun.width / 2, canvDim * 1/4 - inputun.height / 2);
@@ -92,8 +94,6 @@ function preload(dbImage) {
   let finalImage = dbImage ? dbImage : imagemAlternative
   console.log(dbImage)
   imagem = 'image/'+finalImage
-  let food = 'image/'+imagemAlternativeFood
-  imageFoodUpload = loadImage(`${food}`);
   img = loadImage(`${imagem}`);
   gameOverImg = loadImage('image/GAMEOVER3.png');
 }
@@ -182,7 +182,7 @@ function createAction(){
   feed.position(mymidle, canvDim - canvDim*0.08);
   verifyHygieneToExplorar() 
   fight.position(mylastmydle, canvDim - canvDim*0.08);
-  feed.mousePressed(feedAndGrow)
+  feed.mousePressed(toggleText)
   
   
 }
@@ -215,12 +215,33 @@ function reduceFeed() {
   console.log(feedScore);
 }
 
-function feedAndGrow(){
-  
-  image(imageFoodUpload, (width-500)/2, (height-400)/2, 500, 400);
-   
- // imagemAlternativeFood
-   
+
+function feedAndGrow() {
+  /*fill(0);
+  textSize(32);
+  textFont("Georgia");
+  text("comendo mosca", 50, 50);
+  for (let i = 0; i < 200; i++) {
+    stroke(random(255), random(255), random(255));
+    line(random(width), random(height), random(width), random(height));
+  }*/
+  push()
+  if (showText) {
+    textSize(48);
+    fill(255, 0, 0);
+    textStyle(BOLD);
+    text("Comendo", width/2, height/2);
+  }
+  pop()
+}
+
+function toggleText() {
+  showText = !showText;
+  if (showText) {
+    setTimeout(function() {
+      showText = false;
+    }, 10000);
+  }
 }
 
 
