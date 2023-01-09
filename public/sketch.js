@@ -47,6 +47,7 @@ let imagem;
 let imageFoodUpload;
 let img;
 let bg;
+let showImgExplore = false;
 
 /////////////Initial Score////////////////////////
 let feedStart=0
@@ -59,9 +60,11 @@ let bothScoreLife=0
 let imageWidthToIncrease=0
 let imageHeightToIncrease=0
 let showText = false;
+let showTextExplore = false;
 let currentValue;
 //////////////////////////// game over
 let gameOverImg;
+let imageExplore;
 let objScore = {}
 function setup() {
   createCanvas(canvDim, canvDim);
@@ -96,7 +99,9 @@ function preload(dbImage) {
   let finalImage = dbImage ? dbImage : imagemAlternative
   console.log(dbImage)
   imagem = 'image/'+finalImage
+  imageExplore = loadImage('image/waspClear.png');
   img = loadImage(`${imagem}`);
+  
   gameOverImg = loadImage('image/GAMEOVER3.png');
 }
 
@@ -143,7 +148,7 @@ function createAction(){
   //feed button
   mymidle = canvDim - canvDim*0.97;
   myothermydle = canvDim - canvDim*0.87;
-  mylastmydle = canvDim - canvDim*0.75;
+  mylastmydle = canvDim - canvDim*0.73;
   //Square for score
   verifyLifeToDown()
   
@@ -180,29 +185,32 @@ function createAction(){
   //
  
   feed = createButton('Feed');
-  fight = createButton('Fight');
-  feed.position(mymidle, canvDim - canvDim*0.08);
-  verifyHygieneToExplorar() 
-  fight.position(mylastmydle, canvDim - canvDim*0.08);
+  explore = createButton('Explorar');
+  feed.position(mymidle, canvDim - canvDim*0.08); 
+  explore.position(mylastmydle, canvDim - canvDim*0.08);
   feed.mousePressed(toggleText)
+  shower = createButton('Hygiene');
+  shower.position(myothermydle, canvDim - canvDim*0.08);
+  shower.mousePressed(increaseShower)
+  explore.mousePressed(toggleTextExplore)
   feedAndGrow()
+  randomEvent()
   
   
 }
 
-function verifyHygieneToExplorar(){
-  if (bothScoreShower == 100) {
-    explore = createButton("Explorar")
-    explore.position(myothermydle, canvDim - canvDim*0.08);
-    console.log("Cliquei em explorar")
-  } else {
 
-    shower = createButton('Hygiene');
-    shower.position(myothermydle, canvDim - canvDim*0.08);
-    shower.mousePressed(increaseShower)
+function randomEvent(){
+  if(showImgExplore){
+    console.log("Hello explore")
+    image(imageExplore, 0, 0);
   }
-   
+  
 }
+
+
+
+
 //reduce feed twice
 function checkButtonFeed() {
   setTimeout(function() {
@@ -258,6 +266,14 @@ function toggleText() {
     currentValue = random(myArrayFood);
     setTimeout(function() {
       showText = false;
+    }, 100);
+  }
+}
+function toggleTextExplore() {
+  showTextExplore = !showTextExplore;
+  if (showTextExplore) {
+    setTimeout(function() {
+      showTextExplore = false;
     }, 100);
   }
 }
