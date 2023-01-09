@@ -7,7 +7,7 @@ import path from 'path';
 const router = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-let saveSessionId;
+let saveSessionId = 0
 
 //get all user in db
 router.post('/login',(req,res)=>{
@@ -19,7 +19,6 @@ router.post('/login',(req,res)=>{
         [name, password],
         function(err, results) {
          let [image] = results
-         //console.log(image.image)
          saveSessionId = image.id
          res.json({message:image.image})
         }
@@ -27,7 +26,6 @@ router.post('/login',(req,res)=>{
       );
       
 })
-
 
 router.post('/register', (req,res)=>{
     const username = req.body.username
@@ -41,29 +39,20 @@ router.post('/register', (req,res)=>{
        res.send(results)
        });
 })
-let shower = 0;
-let fight = 0;
-let feed = 0
-router.post("/upload/startergy/feed",(req,res)=>{
-    const {feedScore} = req.body
-    feed += feedScore
-    dbase.query('REPLACE INTO stratergy (id, feed, shower, fight) VALUES(?, ?, ?, ?)', 
-    [saveSessionId, feedScore, shower,fight ],(error,results) => {
+
+router.post("/upload/startergy/all",(req,res)=>{
+    const feed = req.body.bothScoreFeed
+    const shower = req.body.bothScoreShower
+    const life =  req.body.bothScoreLife
+    const id = saveSessionId
+    dbase.query('REPLACE INTO stratergy (id, feed, shower, life) VALUES(?, ?, ?, ?)', 
+    [id, feed, shower,life ],(error,results) => {
         if (error) return res.json({ error: error });
         res.send(results)
     });
 
 })
-router.post("/upload/startergy/shower",(req,res)=>{
-    const {showerScore} = req.body
-    shower += showerScore
-    dbase.query('REPLACE INTO stratergy (id, feed, shower, fight) VALUES(?, ?, ?, ?)', 
-    [saveSessionId, feed, showerScore,fight ],(error,results) => {
-        if (error) return res.json({ error: error });
-        res.send(results)
-    });
 
-})
 //let sql = "INSERT INTO imagerandom (`image`,`name`) VALUES ('"+image_path+"','"+name+"');";
 router.get('/getdata',(req,res)=>{
     dbase.query(

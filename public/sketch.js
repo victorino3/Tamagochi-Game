@@ -210,6 +210,7 @@ function checkButtonFeed() {
   setTimeout(function() {
     if(!feed.mouseIsPressed ){
       reduceFeed();
+     
     setTimeout(reduceFeed, 10000);
   }}, 10000);
   
@@ -218,6 +219,7 @@ function checkButtonFeed() {
 
 function reduceFeed() {
   feedScore -= 5;
+  uploadStratergy()
   console.log(feedScore);
 }
 
@@ -280,14 +282,17 @@ function toggleText() {
   showText = !showText;
   if(bothScoreLife < 100 && currentValue == "Mosca"  ){
     lifeScore += 30
+    uploadStratergy()
   }
   if(imageHeightToIncrease < 150 && imageWidthToIncrease < 150 &&  currentValue == "Lagarto"){
     imageHeightToIncrease += 50
     imageWidthToIncrease += 50
+    uploadStratergy()
     //console.log("image and height "+ imageHeightToIncrease, imageWidthToIncrease)
   }
   if (bothScoreLife > 0 && currentValue === "Ups !!Sem comida disponível") {
     lifeScore -= 10;
+    uploadStratergy()
   }
   if (showText) {
     currentValue = random(myArrayFood);
@@ -295,6 +300,7 @@ function toggleText() {
       showText = false;
     }, 100);
   }
+  
 }
 
 function toggleTextExplore() {
@@ -313,6 +319,7 @@ function toggleTextExplore() {
       lifeScore = 0;
       count += 1;
       console.log("Contando "+count)
+      uploadStratergy()
       noLoop()
     }
     if (bothScoreLife > 50 && currentSurprise === "sofreu ataque") {
@@ -320,6 +327,7 @@ function toggleTextExplore() {
       count += 1;
       console.log("Contando "+count)
       lifeScore -= 40;
+      uploadStratergy()
     }
     if(count == 2){
       
@@ -337,6 +345,7 @@ function verifyLifeToDown(){
   setInterval(function() {
       if (feedScore == 0 || showerScore == 0) {
       lifeScore -= 1;
+      uploadStratergy()
     }
     }, 2000);
     verifyLifeToEnd()
@@ -356,6 +365,7 @@ function verifyLifeToUp(){
     if(lifeScore < 100){
       if (bothScoreShower > 50 || feedScore > 50) {
         lifeScore++;
+        uploadStratergy()
     }
   }
 }
@@ -364,6 +374,7 @@ function verifyLifeToUp(){
 function verifyLifeToEnd(){
   if (lifeScore == 0) {
     removeElements();
+    uploadStratergy()
     image(gameOverImg, (width-500)/2, (height-400)/2, 500, 400);
     noLoop()
   }
@@ -376,35 +387,29 @@ function verifyLifeToEnd(){
 function increaseShower(){
   if(showerScore < 100){
     showerScore = 100
+    uploadStratergy()
   }
 }
 
 
 
 
-function uploadFeed() { 
-  let data = {feedScore}
-  httpPost("/upload/startergy/feed","json",data,(response)=>{
-     console.log("response : ", response)
-  })
-}
-function uploadLife() { 
-  let data = {feedScore}
-  httpPost("/upload/startergy/feed","json",data,(response)=>{
+function uploadStratergy() { 
+  let data = {
+    bothScoreFeed,
+    bothScoreShower,
+    bothScoreLife
+  }
+  httpPost("/upload/startergy/all","json",data,(response)=>{
      console.log("response : ", response)
   })
 }
 
-function uploadShower() { 
-  let data = {showerScore}
-  httpPost("/upload/startergy/shower","json",data,(response)=>{
-     console.log("response : ", response)
-  })
-}
 
 function getdata() {
   loadJSON('/getdata',(response)=>{
     let result = response
+    console.log("Data come from back "+response)
     /*feedStart = result.message.feed
     showerStart = result.message.showe*/
     })
