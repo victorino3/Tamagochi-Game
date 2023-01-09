@@ -64,7 +64,13 @@ let showTextExplore = false;
 let currentValue;
 //////////////////////////// game over
 let gameOverImg;
-let imageExplore;
+let surprises = ["novo alimento", "sofreu ataque"];
+let currentSurprise;
+let showSurprise = false;
+let redBackground;
+let count = 0;
+
+
 let objScore = {}
 function setup() {
   createCanvas(canvDim, canvDim);
@@ -74,7 +80,7 @@ function setup() {
   //my Scores by default
   feedScore = feedStart == 0 ||  feedStart ==  null || feedStart ==  undefined ?  20: feedStart 
   showerScore =  showerStart == 0 ||  showerStart ==  null || showerStart ==  undefined ? 10 : showerStart 
-  lifeScore =  lifeStart == 0 ||  lifeStart ==  null || lifeStart ==  undefined ? 10 : lifeStart 
+  lifeScore =  lifeStart == 0 ||  lifeStart ==  null || lifeStart ==  undefined ? 100 : lifeStart 
   checkButtonFeed()
   //input username
   inputun = createInput('victorino');
@@ -99,11 +105,10 @@ function preload(dbImage) {
   let finalImage = dbImage ? dbImage : imagemAlternative
   console.log(dbImage)
   imagem = 'image/'+finalImage
-  imageExplore = loadImage('image/waspClear.png');
   img = loadImage(`${imagem}`);
-  
   gameOverImg = loadImage('image/GAMEOVER3.png');
 }
+
 
 function draw() {
   bckg()
@@ -194,21 +199,10 @@ function createAction(){
   shower.mousePressed(increaseShower)
   explore.mousePressed(toggleTextExplore)
   feedAndGrow()
-  randomEvent()
+  exploreResult()
   
   
 }
-
-
-function randomEvent(){
-  if(showImgExplore){
-    console.log("Hello explore")
-    image(imageExplore, 0, 0);
-  }
-  
-}
-
-
 
 
 //reduce feed twice
@@ -248,6 +242,39 @@ function feedAndGrow() {
   }
   pop()
 }
+function exploreResult() {
+  push()
+  if (showSurprise) {
+    fill(0);
+    textSize(32);
+    textFont("Georgia");
+    textAlign(CENTER, CENTER);
+    
+     
+      if(currentSurprise === "sofreu ataque"){
+        text("Comendo..."+currentSurprise, width/2, height/2);
+        for (let i = 0; i < 200; i++) {
+          stroke(random(255), random(255), random(255));
+          line(random(width), random(height), random(width), random(height));
+          background("red")
+        }
+    }
+    if (currentSurprise === "novo alimento") {
+      text("Comendo..."+currentSurprise, width/2, height/2);
+      for (let i = 0; i < 200; i++) {
+        stroke(random(255), random(255), random(255));
+        line(random(width), random(height), random(width), random(height));
+        background("green")
+    }
+    
+      
+  }
+
+  console.log("Sorted "+currentSurprise)
+
+  }
+  pop()
+}
 
 function toggleText() {
   showText = !showText;
@@ -269,15 +296,41 @@ function toggleText() {
     }, 100);
   }
 }
+
 function toggleTextExplore() {
-  showTextExplore = !showTextExplore;
-  if (showTextExplore) {
+  
+  showSurprise = !showSurprise;
+  if (showSurprise) {
+    currentSurprise = random(surprises);
+    push()
+    textAlign(CENTER, CENTER);
+    textSize(48);
+    fill(0, 0, 0);
+    text("Surpresa: " + currentSurprise, width/2, height/2);
+    console.log(currentSurprise)
+    if (bothScoreLife <= 40 && currentSurprise === "sofreu ataque") {
+      console.log("No desconto "+currentSurprise)
+      lifeScore = 0;
+      count += 1;
+      console.log("Contando "+count)
+      noLoop()
+    }
+    if (bothScoreLife > 50 && currentSurprise === "sofreu ataque") {
+      console.log("No desconto "+currentSurprise)
+      count += 1;
+      console.log("Contando "+count)
+      lifeScore -= 40;
+    }
+    if(count == 2){
+      
+      verifyWin()
+    }
     setTimeout(function() {
-      showTextExplore = false;
+      showSurprise = false;
     }, 100);
+    pop()
   }
 }
-
 
 
 function verifyLifeToDown(){
@@ -291,7 +344,12 @@ function verifyLifeToDown(){
   } 
 
 
-
+function verifyWin(){
+  alert("Parabéns o seu tamagochi consegui sobreviver e venceu!")
+  removeElements()
+  background("white")
+  noLoop()
+}
 
 
 function verifyLifeToUp(){ 
