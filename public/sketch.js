@@ -388,6 +388,12 @@ function uploadFeed() {
      console.log("response : ", response)
   })
 }
+function uploadLife() { 
+  let data = {feedScore}
+  httpPost("/upload/startergy/feed","json",data,(response)=>{
+     console.log("response : ", response)
+  })
+}
 
 function uploadShower() { 
   let data = {showerScore}
